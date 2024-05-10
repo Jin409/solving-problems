@@ -1,10 +1,13 @@
-select id, email, first_name, last_name
-from developers
-where skill_code & (
+with s as (
     select code
     from skillcodes
-    where name = 'C#'
-) or skill_code & (select code
-    from skillcodes
-    where name = 'Python')
-order by id asc
+    where name = 'C#' or name = 'Python'
+)
+select id, email, first_name, last_name
+from developers 
+where exists (
+    select 1
+    from s
+    where skill_code & s.code
+)
+order by id asc;
