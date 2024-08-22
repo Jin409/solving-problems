@@ -21,6 +21,7 @@ class Solution {
                 if(temp.size()==0){
                     return false;
                 }
+                
                 if(temp.peek().equals('(')){
                     temp.poll();
                 }else{
