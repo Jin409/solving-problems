@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,6 +9,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
         String[] input = br.readLine().split(" ");
 
         Deque<int[]> d = new ArrayDeque<>();
@@ -22,7 +24,7 @@ public class Main {
             int index = top[0];
             int num = top[1];
 
-            System.out.println(index);
+            sb.append(index + " ");
 
             if (d.isEmpty()) {
                 break;
@@ -39,5 +41,7 @@ public class Main {
                 }
             }
         }
+
+        System.out.println(sb);
     }
 }
