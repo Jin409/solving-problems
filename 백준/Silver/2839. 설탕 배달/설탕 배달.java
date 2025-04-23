@@ -1,44 +1,42 @@
-
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int n = Integer.parseInt(scanner.nextLine());
 
-        Integer n = Integer.parseInt(br.readLine());
-        int[] sugar = new int[n + 1];
+        int[] arr = new int[n + 1];
+        Arrays.fill(arr, 0);
 
-        sugar[0] = 0;
-        sugar[1] = 0;
-        sugar[2] = 0;
+        if (n >= 3) {
+            arr[3] = 1;
+        }
+        if (n >= 5) {
+            arr[5] = 1;
+        }
 
-        for (int i = 3; i <= n; i++) {
-
-            if (i == 5 || i == 3) {
-                sugar[i] = 1;
-                continue;
-            } else if (i == 4) {
+        for (int i = 6; i <= n; i++) {
+            if (arr[i - 5] != 0 && arr[i - 3] != 0) {
+                arr[i] = Math.min(arr[i - 5] + 1, arr[i - 3] + 1);
                 continue;
             }
 
-            if (sugar[i - 3] > 0 && sugar[i - 5] > 0) {
-                sugar[i] = Math.min(sugar[i - 3] + 1, sugar[i - 5] + 1);
-            } else if (sugar[i - 3] > 0) {
-                sugar[i] = sugar[i - 3] + 1;
-            } else if (sugar[i - 5] > 0) {
-                sugar[i] = sugar[i - 5] + 1;
+            if (arr[i - 5] != 0) {
+                arr[i] = arr[i - 5] + 1;
+                continue;
+            }
+
+            if (arr[i - 3] != 0) {
+                arr[i] = arr[i - 3] + 1;
             }
         }
 
-        if (sugar[n] == 0) {
+        if (arr[n] == 0) {
             System.out.println(-1);
-        } else {
-            System.out.println(sugar[n]);
+            return;
         }
-
+        System.out.println(arr[n]);
     }
 }
