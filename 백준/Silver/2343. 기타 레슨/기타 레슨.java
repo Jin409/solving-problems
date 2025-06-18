@@ -1,14 +1,11 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
     private static int[] numbers;
     private static int m;
-    private static List<Integer> answers;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -29,65 +26,37 @@ public class Main {
             }
         }
 
-        if (m == 1) {
-            System.out.println(sum);
-            return;
-        }
-
-        answers = new ArrayList<>();
-        solve(maxValue, sum);
-
-        int answer = Integer.MAX_VALUE;
-        for (int i = 0; i < answers.size(); i++) {
-            if (answers.get(i) < answer) {
-                answer = answers.get(i);
-            }
-        }
-
+        int answer = solve(maxValue, sum);
         System.out.println(answer);
     }
 
-    private static void solve(int start, int end) {
-        if (start >= end) {
-            return;
-        }
+    private static int solve(int start, int end) {
 
-        int middle = (start + end) / 2;
+        while (start < end) {
+            int middle = (start + end) / 2;
 
-        boolean isValid = true;
-        for (int number : numbers) {
-            if (number > middle) {
-                isValid = false;
-                break;
+            int tempSum = 0;
+            int count = 1;
+            for (int i = 0; i < numbers.length; i++) {
+                if (tempSum + numbers[i] > middle) {
+                    count++;
+                    tempSum = numbers[i];
+                    continue;
+                }
+
+                tempSum += numbers[i];
+            }
+
+            if (count > m) {
+                start = middle + 1;
+            }
+
+            if (count <= m) {
+                end = middle;
             }
         }
 
-        if (!isValid) {
-            solve(middle + 1, end);
-            return;
-        }
-
-        int tempSum = 0;
-        int count = 1;
-        for (int i = 0; i < numbers.length; i++) {
-            // 새로운 카운트로 셈
-            if (tempSum + numbers[i] > middle) {
-                count++;
-                tempSum = numbers[i];
-                continue;
-            }
-
-            tempSum += numbers[i];
-        }
-
-        if (count > m) {
-            solve(middle + 1, end);
-        }
-
-        if (count <= m) {
-            answers.add(middle);
-            solve(start, middle);
-        }
+        return start;
     }
 }
 
