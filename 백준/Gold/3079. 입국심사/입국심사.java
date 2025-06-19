@@ -15,15 +15,15 @@ public class Main {
         peopleCount = Integer.parseInt(s[1]);
 
         originTimes = new long[n];
-        long maxValue = 0;
+        long minValue = (long) Math.pow(10, 9);
         for (int i = 0; i < n; i++) {
             originTimes[i] = Long.parseLong(br.readLine());
-            if (originTimes[i] > maxValue) {
-                maxValue = originTimes[i];
+            if (originTimes[i] < minValue) {
+                minValue = originTimes[i];
             }
         }
 
-        long answer = getAnswer(maxValue, n);
+        long answer = getAnswer(minValue, n);
         System.out.println(answer);
     }
 
