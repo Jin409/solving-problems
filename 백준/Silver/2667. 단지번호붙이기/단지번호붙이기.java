@@ -1,72 +1,91 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.PriorityQueue;
+import java.util.Stack;
 
 public class Main {
 
-    static int n;
-    static int[][] graph; // 방문하고 나서는 0으로 바꾸기
-    static PriorityQueue<Integer> ans = new PriorityQueue<>();
-    static int size;
-    static List<List<Integer>> directions = List.of( // 동, 서, 남, 북
-            List.of(0, 1),
-            List.of(0, -1),
-            List.of(1, 0),
-            List.of(-1, 0)
-    );
+    private static int[][] map;
+
+    private static int n;
+
+    private static List<Integer> answer;
+
+    private static final int[] up = {-1, 0};
+    private static final int[] down = {1, 0};
+    private static final int[] left = {0, -1};
+    private static final int[] right = {0, 1};
+
+    private static final int[][] movements = {up, down, left, right};
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         n = Integer.parseInt(br.readLine());
-        graph = new int[n][n];
+        map = new int[n][n];
 
         for (int i = 0; i < n; i++) {
-            String input = br.readLine();
+            String[] input = br.readLine().split("");
             for (int j = 0; j < n; j++) {
-                if (input.charAt(j) == '0') {
-                    graph[i][j] = 0;
-                } else {
-                    graph[i][j] = 1;
-                }
+                map[i][j] = Integer.parseInt(input[j]);
             }
         }
 
+        answer = new ArrayList<>();
+
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (graph[i][j] == 1) {
-                    graph[i][j] = 0;
-                    size = 1;
-                    move(i, j);
-                    ans.add(size);
+                if (map[i][j] == 0) {
+                    continue;
                 }
+                bfs(i, j);
             }
         }
-        System.out.println(ans.size());
-        for (int i = ans.size() - 1; i >= 0; i--) {
-            System.out.println(ans.poll());
-        }
 
+        System.out.println(answer.size());
+        answer.stream().sorted().forEach(System.out::println);
     }
 
-    public static boolean valid(int x, int y) {
+    private static boolean isInRange(int x, int y) {
         return x >= 0 && x < n && y >= 0 && y < n;
     }
 
-    public static void move(int x, int y) {
-        for (List<Integer> direction : directions) {
-            int newX = x + direction.get(0);
-            int newY = y + direction.get(1);
+    private static void bfs(int x, int y) {
+        Stack<List<Integer>> stack = new Stack<>();
+        stack.add(List.of(x, y));
 
-            // 동, 서, 남, 북으로 이동
-            if (valid(newX, newY) && graph[newX][newY] == 1) {
-                graph[newX][newY] = 0; // 이미 방문했다는 사인
-                size++;
-                move(newX, newY);
+        int count = 0;
+
+        while (!stack.isEmpty()) {
+            List<Integer> top = stack.pop();
+            Integer topX = top.get(0);
+            Integer topY = top.get(1);
+
+            if (map[topX][topY] == 0) {
+                continue;
+            }
+
+            map[topX][topY] = 0;
+            count++;
+
+            for (int[] movement : movements) {
+                int dx = movement[0] + topX;
+                int dy = movement[1] + topY;
+
+                if (!isInRange(dx, dy)) {
+                    continue;
+                }
+
+                if (map[dx][dy] == 0) {
+                    continue;
+                }
+
+                stack.add(List.of(dx, dy));
             }
         }
+
+        answer.add(count);
     }
 }
