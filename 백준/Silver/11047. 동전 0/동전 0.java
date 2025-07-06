@@ -1,41 +1,33 @@
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.Arrays;
 
 public class Main {
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int k = Integer.parseInt(st.nextToken());
+        String[] s = br.readLine().split(" ");
+        int n = Integer.parseInt(s[0]);
+        int target = Integer.parseInt(s[1]);
 
-        int[] values = new int[n];
-        int[] result = new int[k + 1];
-
+        int[] coins = new int[n];
         for (int i = 0; i < n; i++) {
-            values[i] = Integer.parseInt(br.readLine());
+            coins[i] = Integer.parseInt(br.readLine());
         }
 
-        for (int i = 1; i <= k; i++) {
-            for (int j = 0; j < n; j++) {
-                int value = values[j];
-                if (i < value) {
-                    continue;
-                }
-                if (result[i] == 0) {
-                    result[i] = result[i - value] + 1;
-                    continue;
-                }
-                result[i] = Math.min(result[i - value] + 1, result[i]);
+        int[] price = new int[target + 1];
+        Arrays.fill(price, Integer.MAX_VALUE);
+        price[0] = 0;
 
+        for (int i = 1; i <= target; i++) {
+            for (int coin : coins) {
+                if (coin <= i) {
+                    price[i] = Math.min(price[i - coin] + 1, price[i]);
+                }
             }
         }
 
-        System.out.println(result[k]);
+        System.out.print(price[target]);
     }
 }
