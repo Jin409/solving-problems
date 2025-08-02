@@ -1,75 +1,83 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.List;
+import java.util.Stack;
 
 public class Main {
-    static boolean[][] graph;
-    static boolean[][] visited;
-    static int ans;
-    static int m; // 가로
-    static int n; // 세로
+
+    private static int[][] DIRECTIONS = {
+        {-1, 0},
+        {1, 0},
+        {0, 1},
+        {0,-1},
+    };
+
+    private static int maxX;
+    private static int maxY;
+
+    private static int[][] lettuceIndexes;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int T = Integer.parseInt(br.readLine());
 
-        while (T > 0) {
-            T--;
+        int testCase = Integer.parseInt(br.readLine());
 
-            StringTokenizer st = new StringTokenizer(br.readLine());
+        while(testCase-- >0){
+            String[] s = br.readLine().split(" ");
+            maxY = Integer.parseInt(s[0]); // y
+            maxX = Integer.parseInt(s[1]); // x
+            int lettuceCount = Integer.parseInt(s[2]);
 
-            m = Integer.parseInt(st.nextToken());
-            n = Integer.parseInt(st.nextToken());
-            int k = Integer.parseInt(st.nextToken());
+            lettuceIndexes  = new int[maxX][maxY];
 
-            graph = new boolean[m][n];
-            visited = new boolean[m][n];
-            ans = 0;
+            for(int i=0; i<lettuceCount; i++){
+                s = br.readLine().split(" ");
+                int y = Integer.parseInt(s[0]);
+                int x = Integer.parseInt(s[1]);
 
-            for (int i = 0; i < k; i++) {
-                st = new StringTokenizer(br.readLine());
-                int x = Integer.parseInt(st.nextToken());
-                int y = Integer.parseInt(st.nextToken());
-
-                graph[x][y] = true;
+                lettuceIndexes[x][y] = 1;
             }
 
-            for (int i = 0; i < m; i++) {
-                for (int j = 0; j < n; j++) {
-                    if (visited[i][j] == false && graph[i][j] == true) { // 방문하지 않은 경우
-                        dfs(i, j);
-                        ans++;
+            int answer = 0;
+
+            for(int i=0; i<maxX; i++){
+                for(int j=0; j<maxY; j++){
+                    if(lettuceIndexes[i][j]==1){
+                        lettuceIndexes[i][j] = 0;
+                        move(i, j);
+                        answer++;
                     }
                 }
             }
 
-            System.out.println(ans);
+            System.out.println(answer);
         }
     }
 
-    public static boolean valid(int newX, int newY) {
-        return newX >= 0 && newX < m && newY >= 0 && newY < n;
+    private static boolean isInRange(int x, int y){
+        return x>=0 && x < maxX && y >=0 && y<maxY;
     }
 
-    public static void dfs(int x, int y) {
-        // 사방으로 탐색
-        // 1. 범위 내, 2. 연결된 경우, 3. 방문하지 않은 경우
-        if (valid(x - 1, y) && graph[x - 1][y] && !visited[x - 1][y]) {
-            visited[x - 1][y] = true;
-            dfs(x - 1, y);
+    private static void move(int x, int y){
+        Stack<List<Integer>> s = new Stack<>();
+        s.push(List.of(x,y));
+
+        while(!s.isEmpty()){
+            List<Integer> top = s.pop();
+            int topX = top.get(0);
+            int topY = top.get(1);
+
+            for(int[] direction : DIRECTIONS){
+            int dx =topX+ direction[0];
+            int dy = topY+direction[1];
+
+            if(isInRange(dx,dy) && lettuceIndexes[dx][dy] == 1){
+                lettuceIndexes[dx][dy] = 0;
+                s.add(List.of(dx,dy));
+            }
         }
-        if (valid(x, y - 1) && graph[x][y - 1] && !visited[x][y - 1]) {
-            visited[x][y - 1] = true;
-            dfs(x, y - 1);
         }
-        if (valid(x, y + 1) && graph[x][y + 1] && !visited[x][y + 1]) {
-            visited[x][y + 1] = true;
-            dfs(x, y + 1);
-        }
-        if (valid(x + 1, y) && graph[x + 1][y] && !visited[x + 1][y]) {
-            visited[x + 1][y] = true;
-            dfs(x + 1, y);
-        }
+
     }
 }
