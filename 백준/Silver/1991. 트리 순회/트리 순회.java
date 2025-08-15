@@ -1,82 +1,82 @@
-
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+
+    private static final int ROOT_INDEX = 0;
+    private static final int LEFT_INDEX = 1;
+    private static final int RIGHT_INDEX = 2;
+
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int size = Integer.parseInt(br.readLine());
-        Node[] nodes = new Node[size + 1];
-        for (int i = 0; i < size; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            char value = st.nextToken().charAt(0);
-            char left = st.nextToken().charAt(0);
-            char right = st.nextToken().charAt(0);
 
-            if (nodes[value - 'A'] == null) {
-                nodes[value - 'A'] = new Node(value);
-            }
+        int n = Integer.parseInt(br.readLine());
 
-            // 왼쪽이 존재하는 경우
-            if (left != '.') {
-                nodes[left - 'A'] = new Node(left);
-                nodes[value - 'A'].left = nodes[left - 'A'];
-            }
+        char[][] tree = new char[n][3];
 
-            if (right != '.') {
-                nodes[right - 'A'] = new Node(right);
-                nodes[value - 'A'].right = nodes[right - 'A'];
-            }
+        for(int i=0; i<n; i++){
+            String[] s = br.readLine().split(" ");
+
+            char root = s[ROOT_INDEX].toCharArray()[0];
+            int rootIndex = root-'A';
+
+            tree[rootIndex][ROOT_INDEX] = root;
+
+            char left = s[LEFT_INDEX].toCharArray()[0];
+            tree[rootIndex][LEFT_INDEX] = left;
+
+            char right = s[RIGHT_INDEX].toCharArray()[0];
+            tree[rootIndex][RIGHT_INDEX] = right;
         }
 
-        pre(nodes[0]);
-        System.out.println();
-        in(nodes[0]);
-        System.out.println();
-        post(nodes[0]);
+        StringBuffer sb = new StringBuffer();
+        rootAtFirst(tree, 0, sb);
+        System.out.println(sb);
+
+        sb.setLength(0);
+
+        rootInMiddle(tree, 0, sb);
+        System.out.println(sb);
+
+        sb.setLength(0);
+
+        rootAtLast(tree, 0, sb);
+        System.out.println(sb);
     }
 
-    public static void pre(Node node) {
-        System.out.print(node.value);
-        if (node.left != null) {
-            pre(node.left);
-        }
-        if (node.right != null) {
-            pre(node.right);
-        }
-    }
+    private static void rootAtFirst(char[][] tree, int index, StringBuffer sb){
+        sb.append(tree[index][ROOT_INDEX]);
 
-    public static void in(Node node) {
-        if (node.left != null) {
-            in(node.left);
+        if(tree[index][LEFT_INDEX]!='.'){
+            rootAtFirst(tree, tree[index][LEFT_INDEX]-'A', sb);
         }
-        System.out.print(node.value);
-        if (node.right != null) {
-            in(node.right);
+
+        if(tree[index][RIGHT_INDEX]!='.'){
+            rootAtFirst(tree, tree[index][RIGHT_INDEX]-'A', sb);
         }
     }
 
-    public static void post(Node node) {
-        if (node.left != null) {
-            post(node.left);
+    private static void rootInMiddle(char[][] tree, int index, StringBuffer sb){
+        if(tree[index][LEFT_INDEX]!='.'){
+            rootInMiddle(tree, tree[index][LEFT_INDEX]-'A', sb);
         }
-        if (node.right != null) {
-            post(node.right);
+
+        sb.append(tree[index][ROOT_INDEX]);
+
+        if(tree[index][RIGHT_INDEX]!='.'){
+            rootInMiddle(tree, tree[index][RIGHT_INDEX]-'A', sb);
         }
-        System.out.print(node.value);
     }
 
-
-    private static class Node {
-        private char value;
-        private Node left;
-        private Node right;
-
-        public Node(char value) {
-            this.value = value;
+    private static void rootAtLast(char[][] tree, int index, StringBuffer sb){
+        if(tree[index][LEFT_INDEX]!='.'){
+            rootAtLast(tree, tree[index][LEFT_INDEX]-'A', sb);
         }
+
+        if(tree[index][RIGHT_INDEX]!='.'){
+            rootAtLast(tree, tree[index][RIGHT_INDEX]-'A', sb);
+        }
+
+        sb.append(tree[index][ROOT_INDEX]);
     }
 }
