@@ -1,104 +1,66 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.*;
+import java.io.*;
 
 public class Main {
 
-    private static int[] sorted;
+private static int count = 0;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int size = Integer.parseInt(br.readLine());
-        sorted = new int[size];
+		int N = Integer.parseInt(br.readLine());
 
-        String[] rawNumbers = br.readLine().split(" ");
-        int[] numbers = new int[size];
-        for (int i = 0; i < size; i++) {
-            numbers[i] = Integer.parseInt(rawNumbers[i]);
-        }
+		long[] numbers = new long[N];
+		String[] s = br.readLine().split(" ");
+		for(int i=0; i<N; i++){
+			numbers[i] = Long.parseLong(s[i]);
+		}
 
-        sort(0, size - 1, numbers); // 숫자들을 정렬
+		Arrays.sort(numbers);
 
-        int result = 0;
-        for (int i = 0; i < size; i++) {
-            if (isGoodNumber(numbers, i)) {
-                result++;
-            }
-        }
+		for(int i=0; i<N; i++){
+			isGoodNumber(i, numbers);
+		}
 
-        System.out.println(result);
-    }
+		System.out.print(count);
+	}
 
-    private static boolean isGoodNumber(int[] numbers, int targetIndex) {
-        int left = 0;
-        int right = numbers.length - 1;
-        int targetSum = numbers[targetIndex]; // 합이 되어야 하는 값
+	private static void isGoodNumber(int targetIndex, long[] numbers){
+		int startIndex = 0;
+		int endIndex = numbers.length-1;
+		long sum = numbers[startIndex] + numbers[endIndex];
 
-        while (left < right) {
-            int sum = numbers[left] + numbers[right];
+		while(startIndex < numbers.length && endIndex >= 0){
+			sum = numbers[startIndex] + numbers[endIndex];
 
-            if (sum == targetSum && left != targetIndex && right != targetIndex) {
-                return true;
-            }
+			if(startIndex == endIndex){
+				endIndex--;
+				continue;
+			}
 
-            if (sum < targetSum) {
-                left++;
-            }
+			if(targetIndex == startIndex){
+				startIndex++;
+				continue;
+			}
 
-            if (sum > targetSum) {
-                right--;
-            }
+			if(targetIndex == endIndex){
+				endIndex--;
+				continue;
+			}
 
-            if (left == targetIndex) {
-                left++;
-            }
+			if(sum == numbers[targetIndex]){
+				count++;
+				return;
+			}
 
-            if (right == targetIndex) {
-                right--;
-            }
-        }
+			if(sum < numbers[targetIndex]){
+				startIndex++;
+				continue;
+			}
 
-        return false;
-    }
-
-    private static void sort(int left, int right, int[] numbers) {
-        if (left >= right) {
-            return;
-        }
-
-        int middle = (left + right) / 2;
-
-        sort(left, middle, numbers);
-        sort(middle + 1, right, numbers);
-        merge(left, right, numbers);
-    }
-
-    private static void merge(int start, int end, int[] numbers) {
-        int middle = (start + end) / 2;
-        int left = start;
-        int right = middle + 1;
-        int index = start;
-
-        while (left <= middle && right <= end) {
-            if (numbers[left] < numbers[right]) {
-                sorted[index++] = numbers[left++];
-            } else {
-                sorted[index++] = numbers[right++];
-            }
-        }
-
-        while (left <= middle) {
-            sorted[index++] = numbers[left++];
-        }
-
-        while (right <= end) {
-            sorted[index++] = numbers[right++];
-        }
-
-        for (int i = start; i <= end; i++) {
-            numbers[i] = sorted[i];
-        }
-    }
+			if(sum > numbers[targetIndex]){
+				endIndex--;
+			}
+		}
+	}
 }
-
