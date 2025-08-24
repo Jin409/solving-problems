@@ -1,57 +1,73 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
+import java.io.*;
 
 public class Main {
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int n = Integer.parseInt(scanner.nextLine());
-        int[] numbers = new int[n];
-        List<String> result = new ArrayList<>();
+		int n = Integer.parseInt(br.readLine());
 
-        for (int i = 0; i < n; i++) {
-            numbers[i] = Integer.parseInt(scanner.nextLine());
-        }
 
-        int number = 1;
-        int index = 0;
-        boolean isAvailable = true;
+		int[] targets = new int[n];
 
-        Stack<Integer> stack = new Stack<>();
-        stack.push(number);
-        result.add("+");
+		for(int i=0; i<n; i++){
+			int target = Integer.parseInt(br.readLine());
+			targets[i] = target;
+		}
 
-        while (index < n) {
-            if (stack.isEmpty()) {
-                number++;
-                stack.push(number);
-                result.add("+");
-                continue;
-            }
+		List<String> answer = new ArrayList<>();
 
-            int top = stack.peek();
-            if (top == numbers[index]) {
-                // top 이 해당 숫자인 경우
-                stack.pop();
-                result.add("-");
-                index++;
-                continue;
-            }
-            if (number > numbers[index]) {
-                System.out.println("NO");
-                isAvailable = false;
-                return;
-            }
-            number++;
-            stack.push(number);
-            result.add("+");
-        }
+		Stack<Integer> s = new Stack<>();
+		int index = 0;
 
-        for (String s : result) {
-            System.out.println(s);
-        }
-    }
+		for(int target : targets){
+			if(s.isEmpty()){
+				index++;
+				s.add(index);
+				answer.add("+");
+			}
+
+			if(!s.isEmpty() && target == s.peek()){
+				s.pop();
+				answer.add("-");
+				continue;
+			}
+
+			if(index == target){
+				s.add(index);
+				answer.add("+");
+				s.pop();
+				answer.add("-");
+			}
+
+			if(target > index){
+				int count = target-index;
+				for(int i=0; i<count; i++){
+					index++;
+					s.add(index);
+					answer.add("+");
+				}
+				s.pop();
+				answer.add("-");
+			}
+
+			if(target < index){
+				if(s.isEmpty() || s.peek() != target){
+					System.out.println("NO");
+					return;
+				}
+				while(target!=s.peek()){
+					s.pop();
+					answer.add("-");
+				}
+				s.pop();
+				answer.add("-");
+			}
+		}
+
+		for(String ans : answer){
+			System.out.println(ans);
+		}
+	}
 }
