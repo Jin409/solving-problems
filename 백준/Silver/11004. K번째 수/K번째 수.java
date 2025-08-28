@@ -1,74 +1,75 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.*;
+import java.io.*;
 
 public class Main {
 
-    private static int[] sorted;
+	private static int[] NUMBERS;
+	private static int[] SORTED;
+	private static int N;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        String[] s = br.readLine().split(" ");
-        int n = Integer.parseInt(s[0]); // 개수
-        int targetIndex = Integer.parseInt(s[1]);
-        sorted = new int[n];
+		String[] s = br.readLine().split(" ");
+		N = Integer.parseInt(s[0]);
+		int k = Integer.parseInt(s[1]);
 
-        String[] rawNumbers = br.readLine().split(" ");
-        int[] numbers = new int[n];
-        for (int i = 0; i < n; i++) {
-            numbers[i] = Integer.parseInt(rawNumbers[i]);
-        }
+		s = br.readLine().split(" ");
+		NUMBERS = new int[N];
+		SORTED = new int[N];
 
-        solve(0, n - 1, numbers);
+		for(int i=0; i<N; i++){
+			NUMBERS[i] = Integer.parseInt(s[i]);
+		}
 
-        System.out.println(numbers[targetIndex - 1]);
-    }
+		solve(0, N-1);
+		System.out.println(NUMBERS[k-1]);
+	}
 
-    private static void merge(int start, int end, int[] list) {
-        int middle = (start + end) / 2;
-        int left = start;
-        int right = middle + 1;
-        int index = left;
+	private static void reArrange(int start, int end){
+		int middle = (start+end)/2;
+		int left = start;
+		int right = middle+1;
+		int index = left;
 
-        while (left <= middle && right <= end) {
-            if (list[left] <= list[right]) {
-                sorted[index] = list[left];
-                left++;
-            } else { // 만약 오른쪽이 더 작다면
-                sorted[index] = list[right];
-                right++;
-            }
+		while(left <= middle && right <= end){
+			if(NUMBERS[left] <= NUMBERS[right]){
+				SORTED[index] = NUMBERS[left];
+				left++;
+			}else{
+				SORTED[index] = NUMBERS[right];
+				right++;
+			}
 
-            index++;
-        }
+			index++;
+		}
 
-        while (left <= middle) {
-            sorted[index] = list[left];
-            left++;
-            index++;
-        }
+		while(left <= middle){
+			SORTED[index] = NUMBERS[left];
+			left++;
+			index++;
+		}
 
-        while (right <= end) {
-            sorted[index] = list[right];
-            right++;
-            index++;
-        }
+		while(right <= end){
+			SORTED[index] = NUMBERS[right];
+			index++;
+			right++;
+		}
 
-        for (int i = start; i <= end; i++) {
-            list[i] = sorted[i];
-        }
-    }
+		for(int i=start; i<=end; i++){
+			NUMBERS[i] = SORTED[i];
+		}
+	}
 
-    private static void solve(int start, int end, int[] numbers) {
-        if (start >= end) {
-            return;
-        }
+	private static void solve(int start, int end){
+		if(start >= end){
+			return;
+		}
 
-        int mid = (start + end) / 2;
+		int middle = (start+end)/2;
 
-        solve(start, mid, numbers);
-        solve(mid + 1, end, numbers);
-        merge(start, end, numbers);
-    }
+		solve(start, middle);
+		solve(middle+1, end);
+		reArrange(start, end);
+	}
 }
