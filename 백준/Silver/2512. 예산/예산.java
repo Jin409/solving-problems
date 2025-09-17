@@ -1,63 +1,63 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 
-public class Main {
+// The main method must be in a class named "Main".
+class Main {
 
+    private static long totalBudget;
     private static long[] budgets;
-
-    public static void main(String[] args) throws IOException {
+    private static int n;
+    private static long answer;
+    
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        int cityCount = Integer.parseInt(br.readLine());
-
-        budgets = new long[cityCount];
-
+        n = Integer.parseInt(br.readLine());
+        
+        budgets = new long[n];
+        long max = 0;
+        long total = 0;
         String[] s = br.readLine().split(" ");
-        long sum = 0;
-        long maxBudget = 0;
-        for (int i = 0; i < cityCount; i++) {
+        for(int i=0; i<n; i++){
             budgets[i] = Long.parseLong(s[i]);
-            if (budgets[i] > maxBudget) {
-                maxBudget = budgets[i];
-            }
-            sum += budgets[i];
+            max = Math.max(max, budgets[i]);
+            total += budgets[i];
         }
+        totalBudget = Long.parseLong(br.readLine());
 
-        long sumOfBudget = Long.parseLong(br.readLine());
-
-        if (sumOfBudget >= sum) {
-            System.out.println(maxBudget);
+        if(total <= totalBudget){
+            System.out.println(max);
             return;
         }
+        solve(1, max);
+        
+        System.out.println(answer);
+    }
 
-        long left = 0;
-        long right = maxBudget;
-        long result = 0;
+    private static void solve(long left, long right){
+        if(left > right){
+            return;
+        }
+        
+        long middle = (left+right)/2;
 
-        while (left <= right) {
-            long mid = (left + right) / 2;
-            long tempSum = 0;
-            for (int i = 0; i < cityCount; i++) {
-                if (tempSum > sumOfBudget) {
-                    break;
-                }
-
-                if (budgets[i] <= mid) {
-                    tempSum += budgets[i];
-                } else {
-                    tempSum += mid;
-                }
-            }
-
-            if (tempSum <= sumOfBudget) {
-                result = mid;
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
+        long tempTotal = 0;
+        for(long budget : budgets){
+            tempTotal += Math.min(budget, middle);
         }
 
-        System.out.println(result);
+        if(tempTotal > totalBudget){
+            solve(left, middle-1);
+            return;
+        }
+        if(tempTotal < totalBudget){
+            answer = Math.max(answer, middle);
+            solve(middle+1, right);
+            return;
+        }
+        if(tempTotal == totalBudget){
+            answer = Math.max(answer, middle);
+            return;
+        }
     }
 }
