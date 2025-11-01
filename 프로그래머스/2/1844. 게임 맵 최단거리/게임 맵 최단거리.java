@@ -1,55 +1,79 @@
 import java.util.*;
 
 class Solution {
-    private List<List<Integer>> directions = List.of(
-        List.of(0, 1), // 동
-        List.of(0,-1), // 서
-        List.of(-1, 0), // 북
-        List.of(1, 0) // 남
-    );
-    int[][] maps;
-    int[][] distances;
-    int n; // 가로
-    int m; // 세로
+    
+    int[][] DIRECTIONS = {
+        {-1, 0},
+        {1, 0},
+        {0, -1},
+        {0, 1}
+    };
+    
+    int n;
+    int m;
     
     public int solution(int[][] maps) {
-        this.maps = maps;
-        this.n = maps.length;
-        this.m = maps[0].length;
-        distances = new int[n][m];
+        n = maps.length;
+        m = maps[0].length;
         
-        Queue<List<Integer>> q = new LinkedList<>();
-        q.add(List.of(0,0));
-        distances[0][0] = 1;
+        // 도착할 수 없는지 확인하기
+        if(!ableToReach(maps)){
+            return -1;
+        }
         
-        while(!q.isEmpty()){
-            List<Integer> v = q.poll();
-            int x = v.get(0);
-            int y = v.get(1);
-            
-            for(List<Integer> direction : directions){
-                int newX = x+direction.get(0);
-                int newY = y+direction.get(1);
-                
-                if(isValid(newX, newY) && maps[newX][newY]==1){
-                    if(distances[newX][newY]==0){
-                        distances[newX][newY] = distances[x][y]+1;
-                        q.add(List.of(newX, newY));
-                    }else{
-                       distances[newX][newY] = Math.min(distances[x][y]+1, distances[newX][newY]);
-                    }
-                }
-                
+        int[][] times = new int[n][m];
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                times[i][j] = Integer.MAX_VALUE;
             }
         }
-        if(distances[n-1][m-1]==0){
-            return -1;
-        }else{
-            return distances[n-1][m-1];
+        
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[]{0, 0});
+        times[0][0] = 1;
+        
+        while(!q.isEmpty()){
+            int[] top = q.poll();
+            
+            int x = top[0];
+            int y = top[1];
+            
+            for(int[] direction : DIRECTIONS){
+                int dx = direction[0] + x;
+                int dy = direction[1] + y;
+            
+                if(inRange(dx, dy) && maps[dx][dy] == 1) {
+                    maps[dx][dy] = -1;
+                    times[dx][dy] = times[x][y]+1;
+                    q.offer(new int[]{dx, dy});
+                }
+            }
         }
+        
+        if(times[n-1][m-1] == Integer.MAX_VALUE){
+            return -1;
+        }
+        
+        return times[n-1][m-1];
     }
     
-    public boolean isValid(int x, int y){
-        return x>=0 && x<n && y>=0 && y<m;
+    private boolean inRange(int x, int y){
+        return x>=0 && y>=0 && x<n && y<m;
+    }
+    
+    private boolean ableToReach(int[][] maps){
+        int x = n-1;
+        int y = m-1;
+        
+        for(int[] direction : DIRECTIONS){
+            int dx = direction[0] + x;
+            int dy = direction[1] + y;
+            
+            if(inRange(dx, dy) && maps[dx][dy] == 1){
+                return true;
+            }
+        }
+        
+        return false;
     }
 }
