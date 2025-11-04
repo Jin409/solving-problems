@@ -4,35 +4,21 @@ class Solution {
     boolean solution(String s) {
         boolean answer = true;
 
-        Queue<Character> q = new LinkedList<>(); 
+        Stack<Character> st = new Stack<>();
         
-        for(int i=0; i<s.length(); i++){
-            q.add(s.charAt(i));
-        }
-        
-        Queue<Character> temp = new LinkedList<>();
-        
-        while(!q.isEmpty()){
-            Character c = q.poll();
-            if(c.equals('(')){
-                temp.add(c);
+        for(char c : s.toCharArray()){
+            if(c == '('){
+                st.add(c);
             }
-            else{
-                if(temp.size()==0){
+            
+            if(c == ')'){
+                if(st.isEmpty()){
                     return false;
                 }
-                
-                if(temp.peek().equals('(')){
-                    temp.poll();
-                }else{
-                    return false;
-                }
+                st.pop();
             }
         }
-        
-        if(temp.size()>0){
-            return false;
-        }
-        return true;
+
+        return st.isEmpty();
     }
 }
