@@ -13,8 +13,8 @@ class Solution {
     }
     
     private void union(int a, int b){
-        int parentA = parents[a];
-        int parentB = parents[b];
+        int parentA = findParent(a);
+        int parentB = findParent(b);
 
         parents[parentB] = parentA;
     }
