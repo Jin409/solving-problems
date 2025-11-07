@@ -6,20 +6,20 @@ class Solution {
         
         Map<String, Integer> countsForG = new HashMap<>();
         for(int i=0; i<n; i++){
-            String key = genres[i];
-            
-            int value = countsForG.getOrDefault(key, 0);
-            countsForG.put(key, value+plays[i]);
+            int value = countsForG.getOrDefault(genres[i], 0);
+            countsForG.put(genres[i], value + plays[i]);
         }
         
         Queue<Integer> q = new PriorityQueue<>(new Comparator<>(){
             @Override
             public int compare(Integer o1, Integer o2){
-                if(!genres[o1].equals(genres[o2])){ // 장르가 다른 경우
+                // 장르가 다르면 많이 재생된 장르 순으로
+                if(!genres[o1].equals(genres[o2])){
                     return countsForG.get(genres[o2]) - countsForG.get(genres[o1]);
                 }
                 
-                if(plays[o1]!=plays[o2]){
+                // 장르가 같으면 재생 숫자로
+                if(plays[o1] != plays[o2]){
                     return plays[o2] - plays[o1];
                 }
                 
@@ -31,26 +31,24 @@ class Solution {
             q.offer(i);
         }
         
-        List<Integer> answers = new ArrayList<>();
-        Map<String, Integer> countsForApply = new HashMap<>();
-    
+        List<Integer> answer = new ArrayList<>();
+        Map<String, Integer> countsForRegister = new HashMap<>();
+        
         while(!q.isEmpty()){
             int top = q.poll();
             String genre = genres[top];
             
-            // System.out.println(top);
-            
-            if(countsForApply.containsKey(genre) && countsForApply.get(genre) == 2){
+            if(countsForRegister.containsKey(genre) && countsForRegister.get(genre) == 2){
                 continue;
             }
             
-            int value = countsForApply.getOrDefault(genre, 0);
-            countsForApply.put(genre, value+1);
+            int value = countsForRegister.getOrDefault(genre, 0);
+            countsForRegister.put(genre, value+1);
             
-            answers.add(top);
+            answer.add(top);
         }
         
-        return answers.stream()
+        return answer.stream()
             .mapToInt(i -> i)
             .toArray();
     }
