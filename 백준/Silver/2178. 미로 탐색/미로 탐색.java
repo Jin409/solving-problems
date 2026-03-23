@@ -1,75 +1,72 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 
-public class Main {
+// The main method must be in a class named "Main".
+class Main {
 
     private static int[][] map;
-    private static int[][] distances;
-
-    private static int[] up = {-1, 0};
-    private static int[] down = {1, 0};
-    private static int[] left = {0, -1};
-    private static int[] right = {0, 1};
-
-    private static int[][] movements = {up, down, left, right};
+    private static int[][] DIRECTIONS = {
+        {-1, 0},
+        {1, 0},
+        {0, -1},
+        {0, 1},
+    };
+    private static int n;
+    private static int m;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+        String[] input = br.readLine().split(" ");
+        n = Integer.parseInt(input[0]);
+        m = Integer.parseInt(input[1]);
 
-        String[] s = br.readLine().split(" ");
-        int n = Integer.parseInt(s[0]);
-        int m = Integer.parseInt(s[1]);
+        map = new int[n][m];
 
-        map = new int[n + 1][m + 1];
-        distances = new int[n + 1][m + 1];
-
-        for (int i = 1; i <= n; i++) {
-            String[] input = br.readLine().split("");
-            for (int j = 0; j < m; j++) {
-                map[i][j + 1] = Integer.parseInt(input[j]);
+        for(int i=0; i<n; i++){
+            input = br.readLine().split("");
+            for(int j=0; j<m; j++){
+                int a = Integer.parseInt(input[j]);
+                map[i][j] = a;
             }
         }
 
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= m; j++) {
-                distances[i][j] = Integer.MAX_VALUE;
-            }
-        }
+        bfs(0, 0);
 
-        solve();
-        System.out.println(distances[n][m]);
+        System.out.print(map[n-1][m-1]);
     }
 
-    private static boolean isInRange(int x, int y) {
-        return x > 0 && x < map.length && y > 0 && y < map[0].length;
+    private static boolean inRange(int x, int y){
+        return x>=0 && y>=0 && x < n && y < m;
     }
 
-    private static void solve() {
-        Queue<int[]> queue = new LinkedList<>();
+    private static void bfs(int a, int b){
 
-        queue.add(new int[]{1, 1});
-        distances[1][1] = 1;
-        map[1][1] = 0;
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[]{a,b});
 
-        while (!queue.isEmpty()) {
-            int[] top = queue.poll();
+        while(!q.isEmpty()){
+            int[] top = q.poll();
+            int x = top[0];
+            int y = top[1];
 
-            int topX = top[0];
-            int topY = top[1];
+            int originCount = map[x][y];
 
-            for (int[] movement : movements) {
-                int dx = movement[0] + topX;
-                int dy = movement[1] + topY;
+            for(int[] DIRECTION : DIRECTIONS){
+                int dx = x + DIRECTION[0];
+                int dy = y + DIRECTION[1];
 
-                if (isInRange(dx, dy) && map[dx][dy] == 1) {
-                    map[dx][dy] = 0;
-                    distances[dx][dy] = distances[topX][topY] + 1;
-                    queue.add(new int[]{dx, dy});
+                if(!inRange(dx, dy)){
+                    continue;
+                }
+
+                if(map[dx][dy] == 1){
+                    map[dx][dy] = originCount + 1;
+                    q.offer(new int[]{dx,dy});
                 }
             }
+        
         }
     }
 }
