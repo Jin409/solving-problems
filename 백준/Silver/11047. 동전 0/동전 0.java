@@ -1,33 +1,34 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 
-public class Main {
+// The main method must be in a class named "Main".
+class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        String[] s = br.readLine().split(" ");
-        int n = Integer.parseInt(s[0]);
-        int target = Integer.parseInt(s[1]);
+        String[] input = br.readLine().split(" ");
+
+        int n = Integer.parseInt(input[0]);
+        int k = Integer.parseInt(input[1]);
 
         int[] coins = new int[n];
-        for (int i = 0; i < n; i++) {
+
+        for(int i=0; i<n; i++){
             coins[i] = Integer.parseInt(br.readLine());
         }
 
-        int[] price = new int[target + 1];
-        Arrays.fill(price, Integer.MAX_VALUE);
-        price[0] = 0;
+        int count = 0;
 
-        for (int i = 1; i <= target; i++) {
-            for (int coin : coins) {
-                if (coin <= i) {
-                    price[i] = Math.min(price[i - coin] + 1, price[i]);
-                }
+        for(int i=n-1; i>=0; i--){
+            if(coins[i] > k){
+                continue;
             }
+
+            count += k / coins[i];
+            k %= coins[i];
         }
 
-        System.out.print(price[target]);
+        System.out.print(count);
     }
 }
