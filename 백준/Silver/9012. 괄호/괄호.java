@@ -1,43 +1,51 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Stack;
-
-public class Main {
+// The main method must be in a class named "Main".
+class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         int n = Integer.parseInt(br.readLine());
 
-        for (int i = 0; i < n; i++) {
-            String input = br.readLine();
+        while(n-->0){
+            
+            String[] input = br.readLine().split("");
 
-            boolean ans = true;
-            Stack<Character> s = new Stack<>();
+            Queue<String> q = new LinkedList<>();
 
-            for (char c : input.toCharArray()) {
-                if (c == '(') {
-                    s.push(c);
-                } else {
-                    if (s.isEmpty()) {
-                        ans = false;
+            boolean isValid = true;
+            for(int i=0; i<input.length; i++){
+                if(input[i].equals("(")){
+                    q.offer(input[i]);
+                }
+
+                if(input[i].equals(")")){
+                    if(q.isEmpty()){
+                        isValid = false;
                         break;
                     }
-                    s.pop();
+                    
+                    String top = q.peek();
+                    if(top.equals("(")){
+                        q.poll();
+                    }else{
+                        isValid = false;
+                        break;
+                    }
                 }
             }
 
-            if (!s.isEmpty()) {
-                ans = false;
+            if(!q.isEmpty()){
+                isValid = false;
             }
 
-            if (ans) {
+            if(isValid){
                 System.out.println("YES");
-            } else {
+            }else{
                 System.out.println("NO");
             }
         }
     }
-
 }
