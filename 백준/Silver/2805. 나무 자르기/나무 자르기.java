@@ -1,77 +1,53 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 
-public class Main {
+// The main method must be in a class named "Main".
+class Main {
 
-    private static int targetLength;
-    private static List<Long> answers;
-
+    private static int target;
+    private static int[] trees;
+    private static int answer = 0;
+    
     public static void main(String[] args) throws IOException {
+
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        String[] s = br.readLine().split(" ");
-        int n = Integer.parseInt(s[0]);
-        targetLength = Integer.parseInt(s[1]); // 자르고 남은 나무의 높이의 합이 되어야 하는 수
+        String[] input = br.readLine().split(" ");
+        int n = Integer.parseInt(input[0]);
+        target = Integer.parseInt(input[1]);
 
-        String[] rawWoods = br.readLine().split(" ");
+        trees = new int[n];
 
-        long[] woods = new long[n];
-        for (int i = 0; i < n; i++) {
-            woods[i] = Long.parseLong(rawWoods[i]);
+        input = br.readLine().split(" ");
+        for(int i=0; i<n; i++){
+            trees[i] = Integer.parseInt(input[i]);
         }
 
-        long maxLength = 0;
-        for (int i = 0; i < n; i++) {
-            if (woods[i] > maxLength) {
-                maxLength = woods[i];
-            }
-        }
+        find(0, 1_000_000_000);
 
-        answers = new ArrayList<>();
-        solve(0, maxLength, woods);
-
-        long maxAnswer = 0;
-        for (int i = 0; i < answers.size(); i++) {
-            if (maxAnswer < answers.get(i)) {
-                maxAnswer = answers.get(i);
-            }
-        }
-
-        System.out.println(maxAnswer);
+        System.out.print(answer);
     }
 
-    private static void solve(long left, long right, long[] woods) {
-        if (left >= right) {
+    private static void find(int start, int end){
+        int middle = (start + end) / 2;
+
+        if(start > end){
             return;
         }
 
-        long middle = (left + right) / 2;
-
-        long sum = 0;
-        for (int i = 0; i < woods.length; i++) {
-            if (woods[i] < middle) {
-                continue;
+        long result = 0;
+        for(int tree : trees){
+            if(tree > middle){
+                result += (tree - middle);
             }
-
-            sum += (woods[i] - middle);
         }
-
-        if (sum == targetLength) {
-            answers.add(middle);
+        
+        if(result < target){
+            find(start, middle-1);
+        }else{
+            answer = Math.max(answer, middle);
+            find(middle+1, end);
         }
-
-        if (sum < targetLength) {
-            solve(left, middle, woods);
-        }
-
-        if (sum > targetLength) {
-            answers.add(middle);
-            solve(middle + 1, right, woods);
-        }
-
     }
 }
-
