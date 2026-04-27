@@ -1,56 +1,59 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 
-public class Main {
+// The main method must be in a class named "Main".
+class Main {
 
+    private static List<Integer> numbers;
+    private static boolean[] answers;
+    
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
 
-        String[] rawNumbers = br.readLine().split(" ");
-        int[] numbers = new int[n];
-        for (int i = 0; i < n; i++) {
-            numbers[i] = Integer.parseInt(rawNumbers[i]);
+        int n = Integer.parseInt(br.readLine());
+        String[] input = br.readLine().split(" ");
+
+        numbers = new ArrayList<>();
+        for(int i=0; i<n; i++){
+            numbers.add(Integer.parseInt(input[i]));
         }
-        Arrays.sort(numbers);
+        Collections.sort(numbers);
 
         int m = Integer.parseInt(br.readLine());
-        String[] rawTargets = br.readLine().split(" ");
-        int[] targets = new int[m];
-        for (int i = 0; i < m; i++) {
-            targets[i] = Integer.parseInt(rawTargets[i]);
+        input = br.readLine().split(" ");
+
+        answers = new boolean[m];
+        for(int i=0; i<m; i++){
+            find(0, n-1, i, Integer.parseInt(input[i]));
         }
 
-        for (int target : targets) {
-            boolean existed = isExisted(numbers, target);
-            if (existed) {
+        for(int i=0; i<m; i++){
+            if(answers[i]){
                 System.out.println(1);
-            } else {
+            }else{
                 System.out.println(0);
             }
         }
     }
 
-    private static boolean isExisted(int[] numbers, int target) {
-        int start = 0;
-        int end = numbers.length - 1;
+    private static void find(int start, int end, int index, int comparedNumber){
+        int middle = (start + end) / 2;
 
-        while (start <= end) {
-            int middle = (start + end) / 2;
-
-            if (numbers[middle] == target) {
-                return true;
-            }
-
-            if (numbers[middle] < target) {
-                start = middle + 1;
-            } else {
-                end = middle - 1;
-            }
+        if(start > end){
+            answers[index] = false;
+            return;
         }
 
-        return false;
+        if(numbers.get(middle) == comparedNumber){
+            answers[index] = true;
+            return;
+        }
+
+        if(numbers.get(middle) < comparedNumber){
+            find(middle+1, end, index, comparedNumber);
+        }else{
+            find(start, middle-1, index, comparedNumber);
+        }
     }
 }
