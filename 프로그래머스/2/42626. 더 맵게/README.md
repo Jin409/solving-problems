@@ -1,14 +1,14 @@
 # [level 2] 더 맵게 - 42626 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42626?language=java) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42626) 
 
 ### 성능 요약
 
-메모리: 123 MB, 시간: 1684.56 ms
+메모리: 124 MB, 시간: 1584.94 ms
 
 ### 구분
 
-코딩테스트 연습 > 힙（Heap）
+ > 
 
 ### 채점결과
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 05월 06일 21:53:45
+2026년 04월 28일 19:21:48
 
 ### 문제 설명
 
