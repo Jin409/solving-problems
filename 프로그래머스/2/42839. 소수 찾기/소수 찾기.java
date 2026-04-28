@@ -2,74 +2,67 @@ import java.util.*;
 
 class Solution {
     
-    Set<Integer> newNumbers;
+    Set<Integer> madeNumbers = new HashSet<>();
+    
+    private boolean isPrime(int number){
+        if(number == 0 || number == 1){
+            return false;
+        }
+        
+        for(int i=2; i<number; i++){
+            if(number%i==0){
+                return false;
+            }
+        }
+        return true;
+    }
     
     public int solution(String numbers) {
         int answer = 0;
         
-        newNumbers = new HashSet<>();
-        findNumbers(numbers.toCharArray(), "", 0);
-        
-        int max = 0;
-        
-        for(int newNumber : newNumbers) {
-            max = Math.max(newNumber, max);
+        String[] input = numbers.split("");
+        int[] digits = new int[input.length];
+        for(int i=0; i<input.length; i++){
+            digits[i] = Integer.parseInt(input[i]);
         }
         
-        // 가장 큰 숫자까지의 범위 내에서 합성 수 모두 찾기
-        boolean[] composites = getComposites(max);
+        boolean[] visited = new boolean[digits.length];
+        combination(digits, "", visited);
         
-        for(int newNumber : newNumbers){
-            if(composites[newNumber] == false){
+        System.out.println(madeNumbers);
+        
+        for(int number : madeNumbers){
+            if(isPrime(number)){
+                System.out.println(number);
                 answer++;
-                // System.out.println("소수: "+newNumber);
             }
         }
         
         return answer;
     }
     
-    private void findNumbers(char[] origin, String tmp, int index) {        
-        if(!tmp.isEmpty()){
-            newNumbers.add(Integer.parseInt(tmp));
-        }
-        
-        if(tmp.length() >= origin.length || index >= origin.length){
-            return;
-        }
-
-        findNumbers(origin, tmp, index+1);
-        
-        for(int i=0; i<origin.length; i++){
-            if(origin[i]=='u'){
-                continue;
+    private boolean isFinished(boolean[] visited){
+        for(int i=0; i<visited.length; i++){
+            if(!visited[i]){
+                return false;
             }
-            
-            char c = origin[i];
-            origin[i] = 'u';
-            
-            findNumbers(origin, tmp + Character.toString(c), index+1);
-            
-            origin[i] = c;
         }
+        return true;
     }
     
-    private boolean[] getComposites (int number){
-        boolean[] answer = new boolean[number+1];
-        answer[0] = true;
-        answer[1] = true;
-        
-        for(int i=2; i<=Math.sqrt(number); i++){
-            int cnt = 2;
-            int tmp = i+i;
-            
-            while(tmp <= number){
-                answer[tmp] = true;
-                cnt++;
-                tmp = (i*cnt);
-            }
+    private void combination(int[] numbers, String input, boolean[] visited){
+        if(input.length() > 0 ){
+            madeNumbers.add(Integer.parseInt(input));
         }
         
-        return answer;
+        for(int i=0; i<numbers.length; i++){
+            
+            if(!visited[i]){
+                visited[i] = true;
+                combination(numbers, input+String.valueOf(numbers[i]), visited);
+                visited[i] = false;
+            }
+            
+        }
     }
 }
