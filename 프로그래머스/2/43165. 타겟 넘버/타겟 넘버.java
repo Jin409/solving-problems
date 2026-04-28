@@ -1,29 +1,20 @@
-import java.util.*;
-
 class Solution {
-    public int solution(int[] numbers, int target) {
-        int answer = 0;
-        Queue<List<Integer>> q = new LinkedList<>();
-        q.add(List.of(0,-1));
-        
-        // bfs 로
-        while(!q.isEmpty()){
-            List<Integer> v = q.poll();
-            int result = v.get(0);
-            int index = v.get(1);
-        
-            if(index == (numbers.length-1)){
-                if(result==target){
-                    answer++;
-                }
-                continue; // 이미 다 돌았음
+    int answer = 0;
+    
+    public int solution(int[] numbers, int target) {    
+        solve(numbers, target, 0, 0);
+        return answer;
+    }
+    
+    private void solve(int[] numbers, int target, int result, int index){
+        if(index == numbers.length){
+            if(target == result){
+                answer++;
             }
-            index++; // 다음 숫자로 계산해서 넣기
-            int number = numbers[index];
-            q.add(List.of(result+number, index));
-            q.add(List.of(result+(number*-1), index));
+            return;
         }
         
-        return answer;
+        solve(numbers, target, result + (numbers[index]), index+1);
+        solve(numbers, target, result - (numbers[index]), index+1);
     }
 }
