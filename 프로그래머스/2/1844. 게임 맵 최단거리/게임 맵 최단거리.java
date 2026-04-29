@@ -2,54 +2,59 @@ import java.util.*;
 
 class Solution {
     
-    int[][] DIRECTIONS = {
+    private int[][] DIRECTIONS = {
         {-1, 0},
         {1, 0},
         {0, -1},
         {0, 1}
     };
     
+    private int n;
+    private int m;
+    
+    private boolean inRange(int x, int y){
+        return x>=0 && y>=0 && x<n && y<m;
+    }
+    
     public int solution(int[][] maps) {
         int answer = 0;
-        
-        int n = maps.length;
-        int m = maps[0].length;
-        
-        int[][] records = new int[n][m];
-        boolean[][] visited = new boolean[n][m];
-    
-        records[0][0] = 1;
-        visited[0][0] = true;
+
+        n = maps.length;
+        m = maps[0].length;
         
         Queue<int[]> q = new LinkedList<>();
-        q.offer(new int[]{0,0});
+        q.offer(new int[]{0, 0});
+        maps[0][0] = 0;
+        
+        int[][] distances = new int[n][m];
+        distances[0][0] = 1;
+        distances[n-1][m-1] = -1;
         
         while(!q.isEmpty()){
+            
             int[] top = q.poll();
             
             int x = top[0];
             int y = top[1];
+            int distance = distances[x][y];
             
-            for(int[] direction : DIRECTIONS){
-                int dx = direction[0] + x;
-                int dy = direction[1] + y;
+            for(int[] DIRECTION : DIRECTIONS){
                 
-                if(inRange(dx, dy, n, m) && maps[dx][dy] == 1 && !visited[dx][dy]){
-                    visited[dx][dy] = true;
-                    records[dx][dy] = records[x][y]+1;
-                    q.offer(new int[]{dx,dy});
+                int dx = x + DIRECTION[0];
+                int dy = y + DIRECTION[1];
+                
+                if(!inRange(dx, dy)){
+                    continue;
+                }
+                
+                if(maps[dx][dy] == 1){
+                    distances[dx][dy] = distance + 1;
+                    maps[dx][dy] = 0;
+                    q.offer(new int[]{dx, dy});
                 }
             }
         }
-        
-        if(!visited[n-1][m-1]){
-            return -1;
-        }
-        
-        return records[n-1][m-1];
-    }
-    
-    private boolean inRange(int x, int y, int n, int m){
-        return x<n && x>=0 && y < m && y>=0;
+
+        return distances[n-1][m-1];
     }
 }
