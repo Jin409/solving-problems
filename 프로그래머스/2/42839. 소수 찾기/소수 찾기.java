@@ -2,10 +2,10 @@ import java.util.*;
 
 class Solution {
     
-    Set<Integer> madeNumbers = new HashSet<>();
+    Set<Integer> answers = new HashSet<>();
     
     private boolean isPrime(int number){
-        if(number == 0 || number == 1){
+        if(number == 1 || number == 0){
             return false;
         }
         
@@ -14,55 +14,43 @@ class Solution {
                 return false;
             }
         }
+        
         return true;
     }
     
     public int solution(String numbers) {
-        int answer = 0;
+        String[] values = numbers.split("");
         
-        String[] input = numbers.split("");
-        int[] digits = new int[input.length];
-        for(int i=0; i<input.length; i++){
-            digits[i] = Integer.parseInt(input[i]);
+        int n = values.length;
+        int[] digits = new int[n];
+        
+        for(int i=0; i<n; i++){
+            digits[i] = Integer.parseInt(values[i]);
         }
         
-        boolean[] visited = new boolean[digits.length];
-        combination(digits, "", visited);
+        find(digits, "", new boolean[n]);
         
-        System.out.println(madeNumbers);
+        return answers.size();
+    }
+    
+    private void find(int[] digits, String value, boolean[] visited){
         
-        for(int number : madeNumbers){
+        if(value.length() > 0){
+            int number = Integer.parseInt(value);
             if(isPrime(number)){
-                System.out.println(number);
-                answer++;
+                answers.add(number);
             }
         }
         
-        return answer;
-    }
-    
-    private boolean isFinished(boolean[] visited){
-        for(int i=0; i<visited.length; i++){
-            if(!visited[i]){
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    private void combination(int[] numbers, String input, boolean[] visited){
-        if(input.length() > 0 ){
-            madeNumbers.add(Integer.parseInt(input));
-        }
-        
-        for(int i=0; i<numbers.length; i++){
+        for(int i=0; i<digits.length; i++){
             
             if(!visited[i]){
                 visited[i] = true;
-                combination(numbers, input+String.valueOf(numbers[i]), visited);
+                find(digits, value+String.valueOf(digits[i]), visited);
                 visited[i] = false;
             }
             
         }
+        
     }
 }
