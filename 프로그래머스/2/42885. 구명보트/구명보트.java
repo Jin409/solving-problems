@@ -1,6 +1,6 @@
 import java.util.*;
 
-class Solution {    
+class Solution {
     public int solution(int[] people, int limit) {
         int answer = 0;
         
@@ -11,23 +11,20 @@ class Solution {
         Collections.sort(newP);
         
         int left = 0;
-        int right = people.length - 1;
+        int right = newP.size() - 1;
         
         while(left < right){
             
             if(newP.get(left) + newP.get(right) <= limit){
-                answer++;
                 left++;
                 right--;
-                continue;
+                answer++;
+            }else{
+                right--;
             }
-            
-            right--;
         }
-
-        // 5 5 7 8
-        System.out.println(answer);
-        answer += (people.length - answer * 2);
+        
+        answer += (newP.size() - answer * 2);
         return answer;
     }
 }
