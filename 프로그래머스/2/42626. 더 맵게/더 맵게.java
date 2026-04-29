@@ -2,49 +2,36 @@ import java.util.*;
 
 class Solution {
     
-    private boolean meetCondition(PriorityQueue<Integer> pq, int k){
-        int size = pq.size();
-        
-        for(int i=0; i<size; i++){
-            if(pq.peek() < k){
-                return false;
-            }
-        }
-        
-        return true;
+    private boolean canEnd(PriorityQueue<Integer> pq, int K){
+        return pq.peek() >= K;
     }
     
     public int solution(int[] scoville, int K) {
         int answer = 0;
         
+        // 가장 낮은 것 + 두번째로 낮은 것 더해서 다시 push
+        
         PriorityQueue<Integer> pq = new PriorityQueue<>();
-        for(int scov : scoville){
-            pq.offer(scov);
+        
+        for(int s : scoville){
+            pq.offer(s);
         }
         
-        boolean isAvailable = false;
-        
-        while(true){        
-            if(meetCondition(pq, K)){
-                isAvailable = true;
-                break;
-            }
+        while(!canEnd(pq, K)){
             
             if(pq.size() < 2){
+                answer = -1;
                 break;
             }
-
-            answer++;
             
             int first = pq.poll();
             int second = pq.poll();
             
-            pq.offer(first + second*2);
+            pq.offer(first + second * 2);
+            
+            answer++;
         }
         
-        if(isAvailable){
-            return answer;
-        }
-        return -1;
+        return answer;
     }
 }
