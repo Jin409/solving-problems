@@ -4,14 +4,15 @@ class Solution {
     public int solution(int[] people, int limit) {
         int answer = 0;
         
+        int n = people.length;
+        int left = 0;
+        int right = n - 1;
+        
         List<Integer> newP = new ArrayList<>();
         for(int p : people){
             newP.add(p);
         }
         Collections.sort(newP);
-        
-        int left = 0;
-        int right = newP.size() - 1;
         
         while(left < right){
             
@@ -22,9 +23,10 @@ class Solution {
             }else{
                 right--;
             }
+            
         }
         
-        answer += (newP.size() - answer * 2);
+        answer += (n - answer * 2);
         return answer;
     }
 }
