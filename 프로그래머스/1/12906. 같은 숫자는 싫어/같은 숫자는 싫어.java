@@ -2,24 +2,21 @@ import java.util.*;
 
 public class Solution {
     public int[] solution(int []arr) {
-        Queue<Integer> q = new LinkedList<>();
-        for(int num : arr){
-            q.offer(num);
-        }
+        Stack<Integer> s = new Stack<>();
         
-        List<Integer> answer = new ArrayList<>();
-        int before = -1;
-        
-        while(!q.isEmpty()){
-            int top = q.poll();
-            if(before != top){
-                answer.add(top);
+        for(int i : arr){
+            if(s.isEmpty()){
+                s.push(i);
+            }else{
+                if(i == s.peek()){
+                    continue;
+                }else{
+                    s.push(i);
+                }
             }
-            before = top;
         }
-
-        return answer.stream()
-            .mapToInt(i -> i)
-            .toArray();
+        
+        List<Integer> answer = new ArrayList<>(s);
+        return answer.stream().mapToInt(i->i).toArray();
     }
 }
