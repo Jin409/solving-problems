@@ -1,11 +1,11 @@
-select a.hour, count(b.datetime) as count
+select a.hour, count(animal_id) as count
 from (
     select level - 1 as hour
     from dual
     connect by level <= 24
 ) a
 left join (
-    select extract (hour from cast(datetime as timestamp)) as hour, datetime
+    select animal_id, extract(hour from cast(datetime as timestamp)) as hour
     from animal_outs
 ) b
 on a.hour = b.hour
