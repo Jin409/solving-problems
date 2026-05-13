@@ -2,34 +2,33 @@ import java.util.*;
 
 class Solution {
     
-    private boolean canEnd(PriorityQueue<Integer> pq, int K){
-        return pq.peek() >= K;
+    private boolean meetsCondition(PriorityQueue<Integer> q, int K){
+        return q.peek() >= K;
     }
-    
+
     public int solution(int[] scoville, int K) {
         int answer = 0;
         
-        // 가장 낮은 것 + 두번째로 낮은 것 더해서 다시 push
+        // 가장 낮은 두 개의 음식을 섞어서 새롭게 하기
+        // 모든 음식의 지수가 K 이상이 될 때까지
         
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        PriorityQueue<Integer> q = new PriorityQueue<>();
         
-        for(int s : scoville){
-            pq.offer(s);
+        for(int i=0; i<scoville.length; i++){
+            q.offer(scoville[i]);
         }
         
-        while(!canEnd(pq, K)){
+        while(!meetsCondition(q, K)){
+            answer++;
             
-            if(pq.size() < 2){
-                answer = -1;
-                break;
+            if(q.size() < 2){
+                return -1;
             }
             
-            int first = pq.poll();
-            int second = pq.poll();
+            int first = q.poll();
+            int second = q.poll();
             
-            pq.offer(first + second * 2);
-            
-            answer++;
+            q.offer(first + second * 2);
         }
         
         return answer;
