@@ -1,23 +1,21 @@
 class Solution {
     
-    private int answer = 0;
+    int answer = 0;
     
     public int solution(int[] numbers, int target) {
-        find(target, 0, numbers, numbers[0]);
-        find(target, 0, numbers, numbers[0] * -1);
+        solve(0, 0, numbers, target);
         return answer;
     }
     
-    private void find(int target, int index, int[] numbers, int now){
-        
-        if(index >= numbers.length - 1){ 
-            if(now == target){
+    private void solve(int index, int result, int[] numbers, int target){
+        if(index >= numbers.length){
+            if(target == result){
                 answer++;
-            }   
+            }
             return;
         }
-    
-        find(target, index+1, numbers, now+(numbers[index+1]));
-        find(target, index+1, numbers, now+(numbers[index+1]*-1));
+        
+        solve(index+1, result + (numbers[index]), numbers, target);
+        solve(index+1, result - (numbers[index]), numbers, target);
     }
 }
