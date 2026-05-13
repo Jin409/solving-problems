@@ -1,8 +1,7 @@
 import java.util.*;
 
 class Solution {
-    
-    private int[][] DIRECTIONS = {
+    int[][] DIRECTIONS = {
         {-1, 0},
         {1, 0},
         {0, -1},
@@ -13,33 +12,29 @@ class Solution {
     private int m;
     
     private boolean inRange(int x, int y){
-        return x>=0 && y>=0 && x<n && y<m;
+        return x<n && y<m && x>=0 && y>=0;
     }
     
     public int solution(int[][] maps) {
         int answer = 0;
-
+        
         n = maps.length;
         m = maps[0].length;
         
+        int[][] dp = new int[n][m];
+        
         Queue<int[]> q = new LinkedList<>();
         q.offer(new int[]{0, 0});
+        dp[0][0] = 1;
         maps[0][0] = 0;
-        
-        int[][] distances = new int[n][m];
-        distances[0][0] = 1;
-        distances[n-1][m-1] = -1;
         
         while(!q.isEmpty()){
             
             int[] top = q.poll();
-            
             int x = top[0];
             int y = top[1];
-            int distance = distances[x][y];
             
             for(int[] DIRECTION : DIRECTIONS){
-                
                 int dx = x + DIRECTION[0];
                 int dy = y + DIRECTION[1];
                 
@@ -48,13 +43,17 @@ class Solution {
                 }
                 
                 if(maps[dx][dy] == 1){
-                    distances[dx][dy] = distance + 1;
-                    maps[dx][dy] = 0;
                     q.offer(new int[]{dx, dy});
+                    dp[dx][dy] = dp[x][y] + 1;
+                    maps[dx][dy] = 0;
                 }
             }
         }
-
-        return distances[n-1][m-1];
+        
+        if(dp[n-1][m-1] == 0){
+            return -1;
+        }
+        
+        return dp[n-1][m-1];
     }
 }
