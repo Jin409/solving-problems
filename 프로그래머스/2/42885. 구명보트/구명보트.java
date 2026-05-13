@@ -4,29 +4,27 @@ class Solution {
     public int solution(int[] people, int limit) {
         int answer = 0;
         
-        int n = people.length;
-        int left = 0;
-        int right = n - 1;
+        Arrays.sort(people);
         
-        List<Integer> newP = new ArrayList<>();
-        for(int p : people){
-            newP.add(p);
-        }
-        Collections.sort(newP);
+        int n = people.length;
+        
+        int left = 0;
+        int right = n-1;
+        int count = 0;
         
         while(left < right){
-            
-            if(newP.get(left) + newP.get(right) <= limit){
+            if(people[left] + people[right] <= limit){
+                count++;
                 left++;
                 right--;
-                answer++;
-            }else{
-                right--;
+                continue;
             }
             
+            right--;
         }
         
-        answer += (n - answer * 2);
+        answer = n - (count*2) + count;
+        
         return answer;
     }
 }
